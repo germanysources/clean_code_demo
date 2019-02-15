@@ -1,13 +1,13 @@
-# Beispiel für clean ABAP Code #
+# Beispiel für Clean ABAP Code #
 In diesem Repository ist ein kleines Bespiel für "Clean ABAP Code". Dieses
-Repository soll Entwicklern einige Ideen aufzeigen zum Qualität in der ABAP Entwicklung.
+Repository soll Entwicklern einige Ideen aufzeigen zum Thema Qualität in der ABAP Entwicklung.
 
 ## Features ##
 Dem Benutzer wird eine Auswertung mit Angeboten, die mit dem Grund "zu teuer"
 abgesagt wurden, im ALV-Grid präsentiert. Diese Auswertung enthält folgende Informationen:
 * Kunde und Artikel (Material)
 * Monat (bezieht sich auf das Bestelldatum)
-* Anzahl der abgesagten Angebote
+* Anzahl der abgesagten Angebote (Grund "zu teuer")
 * Anzahl aller Angebote
 * Preisspanne von-bis der abgesagten Angebote
 
