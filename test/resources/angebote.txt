@@ -1,0 +1,2 @@
+* Die Angebotsnummern (vbak-vbeln), deren Positionen wir lesen wollen
+VBELN

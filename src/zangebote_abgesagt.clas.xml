@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+    <VERSION>1</VERSION>
+    <LANGU>D</LANGU>
+    <DESCRIPT>Spanne abgesagte Angebote</DESCRIPT>
+    <EXPOSURE>2</EXPOSURE>
+    <STATE>1</STATE>
+    <CLSFINAL>X</CLSFINAL>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+    <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>ADD_ANG_TO_SUMME</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>neues Angebot in Preisspanne einfliessen lassen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>ADD_LOG_MESSAGE</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Log Meldung hinzufuegen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>ANGEBOTE_KUMULIEREN</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Preisspanne pro Kunde und Artikel festlegen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>CONSTRUCTOR</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Selektionsvariablen im Constructor uebergeben</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>GET_ANGEBOTE</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Angebote-Auswertung</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>GET_ANGEBOTSKOPFDATEN</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Kopfdaten der Angebote lesen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>GET_ANGEBOTSPOSITIONEN</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Liest alle Angebotspositionen (abgesagt oder nicht)</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>GET_TEXTE</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Kundenamen und Materialtexte lesen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>OUT_SUMME_KUNDE_ARTIKEL</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Index Tabelle für ALV-Grid</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>SUMME_KUNDE_ARTIKEL</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Felder name_kunde, bez_artikel nicht in den Schlüssel</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>TEARDOWN</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Destructor Anwendungslog entfernen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>_ARTIKEL</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Artikel Selektion</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>_BESTELLDATEN</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Bestelldatum Selektion</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>_KUNDEN</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Kunden Selektion</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

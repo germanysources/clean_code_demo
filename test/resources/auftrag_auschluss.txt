@@ -1,0 +1,3 @@
+* Ein Auftrag, der auf Auschluss geprueft wird
+* Alle Felder muessen gefuellt sein
+VBELN  BSTDK  KUNNR

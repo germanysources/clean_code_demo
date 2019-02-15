@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZANGEBOTE_ABGESAGT</ARBGB>
+    <MASTERLANG>D</MASTERLANG>
+    <STEXT>Abgesagte Angebote</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>D</SPRSL>
+     <ARBGB>ZANGEBOTE_ABGESAGT</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>Keine Angebote gefunden.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>D</SPRSL>
+     <ARBGB>ZANGEBOTE_ABGESAGT</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Angebot &amp;1 Position &amp;2 Umrechnung der Mengeneinheiten nicht möglich.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>D</SPRSL>
+     <ARBGB>ZANGEBOTE_ABGESAGT</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Keine Meldungen protokolliert.</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

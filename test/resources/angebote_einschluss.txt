@@ -1,0 +1,3 @@
+* Angebote, die auf Einschluss geprueft werden
+* Vorbereitung: Setzen der Selektionsoptionen in der setup Methode
+VBELN	BSTDK	KUNNR	
