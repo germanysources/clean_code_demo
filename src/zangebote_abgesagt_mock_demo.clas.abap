@@ -327,9 +327,9 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
       " input_invalid kann nicht auftreten <position>-kpein vom Type p
       " output_invalid kann nicht auftreten <position>-kpein vom Type p
       IF sy-subrc <> 0.
-        " Umrechnung nicht moeglich. Protokollieren und Angebot ignorerein
+        " Umrechnung nicht moeglich. Protokollieren und Angebot ignorieren
         add_log_message( <position> ).
-      ENDIF.
+      ENDIF
 
     ENDLOOP.
 
@@ -345,7 +345,7 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
                    <nku> TYPE _name_kunde,
                    <bar> TYPE _bez_artikel.
 
-    " zur besseren Performance werden die Bezeichnung und Namen
+    " zur besseren Performance werden die Bezeichnungen und Namen
     " alle in einem select gelesen
     SELECT kunnr, name1 FROM kna1
       INTO CORRESPONDING FIELDS OF TABLE @name_kunden
