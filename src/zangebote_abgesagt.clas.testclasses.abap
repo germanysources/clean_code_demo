@@ -35,7 +35,7 @@ CLASS test_angebote_abgesagt DEFINITION FOR TESTING
     " abgesagtes Angebot zur Summe hinzufuegen
     METHODS add_asg_ang_to_summe FOR TESTING.
 
-    " Kumulation. Um die Methode kurz zu halten, wurde der value Operator benutzer
+    " Kumulation. Um die Methode kurz zu halten, wurde der value Operator benutzt
     " Dieser Operator steht ab Release 740 zur Verfuegung
     METHODS kumulation FOR TESTING.
 
