@@ -29,12 +29,12 @@ CLASS test_angebote_abgesagt DEFINITION FOR TESTING
   PROTECTED SECTION.
 
     " Datenbankaufruf mocken
-    " Um die Methode kurz zu halten, wurde der value Operator benutzer
+    " Um die Methode kurz zu halten, wurde der value Operator benutzt
     " Dieser Operator steht ab Release 740 zur Verfuegung
     METHODS get_angebotskopfdaten REDEFINITION.
 
     " Datenbankaufruf mocken
-    " Um die Methode kurz zu halten, wurde der value Operator benutzer
+    " Um die Methode kurz zu halten, wurde der value Operator benutzt
     " Dieser Operator steht ab Release 740 zur Verfuegung
     METHODS get_angebotspositionen REDEFINITION.
 
@@ -51,7 +51,7 @@ CLASS test_angebote_abgesagt DEFINITION FOR TESTING
     " abgesagtes Angebot zur Summe hinzufuegen
     METHODS add_asg_ang_to_summe FOR TESTING.
 
-    " Kumulation. Um die Methode kurz zu halten, wurde der value Operator benutzer
+    " Kumulation. Um die Methode kurz zu halten, wurde der value Operator benutzt
     " Dieser Operator steht ab Release 740 zur Verfuegung
     METHODS kumulation FOR TESTING
       RAISING
@@ -246,8 +246,8 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
 
     get_mockup_loader.
 
-    " Die erwarteten Werte werden aus dem MIME Objekt ZANGEBOT_ABGESAGT_TEST gelesen.
-    " Hier gibt es einmal die Auftraege, die ausgeschlossen werden muessen
+    " Die erwarteten Werte werden aus den Dateien auftrag_ausschluss und angebote_einschluss gelesen.
+    " Hier gibt es einmal die Auftraege, die ausgeschlossen werden muessen,
     " und einmal die Angebote, die auf Einschluss geprueft werden muessen.
     mockup->load_data( EXPORTING i_obj = 'auftrag_auschluss'
       IMPORTING e_container = exp_auschluss ).
