@@ -328,7 +328,7 @@ CLASS ZANGEBOTE_ABGESAGT IMPLEMENTATION.
       " input_invalid kann nicht auftreten <position>-kpein vom Type p
       " output_invalid kann nicht auftreten <position>-kpein vom Type p
       IF sy-subrc <> 0.
-        " Umrechnung nicht moeglich. Protokollieren und Angebot ignorerein
+        " Umrechnung nicht moeglich. Protokollieren und Angebot ignorieren
         add_log_message( <position> ).
       ENDIF.
 
