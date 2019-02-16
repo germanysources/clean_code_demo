@@ -346,7 +346,7 @@ CLASS ZANGEBOTE_ABGESAGT IMPLEMENTATION.
                    <nku> TYPE _name_kunde,
                    <bar> TYPE _bez_artikel.
 
-    " zur besseren Performance werden die Bezeichnung und Namen
+    " zur besseren Performance werden die Bezeichnungen und Namen
     " alle in einem select gelesen
     SELECT kunnr, name1 FROM kna1
       INTO CORRESPONDING FIELDS OF TABLE @name_kunden
