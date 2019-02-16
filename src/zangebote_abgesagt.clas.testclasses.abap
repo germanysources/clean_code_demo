@@ -206,7 +206,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
 
     get_mockup_loader.
 
-    " Die erwarteten Werte werden aus dem MIME Objekt ZANGEBOT_ABGESAGT_TEST gelesen.
+    " Die erwarteten Werte werden aus den Dateien auftrag_auschluss und angebote_einschluss gelesen.
     " Hier gibt es einmal die Auftraege, die ausgeschlossen werden muessen
     " und einmal die Angebote, die auf Einschluss geprueft werden muessen.
     mockup->load_data( EXPORTING i_obj = 'auftrag_auschluss'
@@ -240,6 +240,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     " Die Angebote, deren Positionen wir lesen wollen
     mockup->load_data( EXPORTING i_obj = 'angebote' i_strict = abap_false
      IMPORTING e_container = angebote ).
+    " Die erwarteten Positionen
     mockup->load_data( EXPORTING i_obj = 'angebote_positionen'
       IMPORTING e_container = exp_positionen ).
 
