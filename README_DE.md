@@ -43,7 +43,11 @@ Selektionsoptionen gepflegt werden (entsprechend den lokalen Datenbankinhalten).
 
 ## Installation ##
 Importiert wird der Source-Code mit dem Tool [abapgit](https://github.com/larshp/abapgit).
-Mindestens Basis Stack 740 wird benötigt.
+Mindestens SAP Basis 740 wird benötigt.
+
+### Log Protokolle ###
+In der Transaktion slg0 muss zum Objekt "SD-SLS" das Unterobjekt "ZANG_ABGESAGT"
+angelegt werden.
 
 ## Entwicklungsobjekte ##
 ### Report ```zangebote_abgesagt``` ###
