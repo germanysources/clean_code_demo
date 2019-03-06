@@ -7,14 +7,15 @@ DEFINE initialisierung.
 END-OF-DEFINITION.
 
 DEFINE get_mockup_loader.
-  " @todo
-  " Nach dem Import mit abapgit bitte die Parameter in der create Methode anpassen
-  " i_path hier ersetzen wir /your/path durch unseren Pfad
-  " i_encoding 4110, falls wir die Textdateien aus der Vorlage verwenden.
-  " Exportieren wir die Microsoft Excel Dateien als Unicode-Text braucht keine Codierung angegeben werden.
+" @todo
+" Nach dem Import mit abapgit bitte die Parameter in der create Methode anpassen
+" i_path hier ersetzen wir /your/path durch unseren Pfad
+" i_encoding 4110, falls wir die Textdateien aus der Vorlage verwenden.
+" Exportieren wir die Microsoft Excel Dateien als Unicode-Text braucht keine Codierung angegeben werden.
   DATA(mockup) = zcl_mockup_loader=>create(
-  i_path = '/your/path' i_type = 'FILE'
-  i_encoding = '4110' i_begin_comment = '*' ).
+    i_path = '/your/path' i_type = 'FILE'
+    i_encoding = '4110' i_begin_comment = '*' ).
+
 END-OF-DEFINITION.
 
 * Testklasse Risikostufe harmlos, da in dieser Klasse keine

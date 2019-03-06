@@ -275,10 +275,9 @@ CLASS ZANGEBOTE_ABGESAGT IMPLEMENTATION.
 
   method GET_ANGEBOTSKOPFDATEN.
 
-    SELECT k~vbeln, k~kunnr, kd~bstdk FROM vbak AS k
-      INNER JOIN vbkd AS kd ON kd~vbeln = k~vbeln
+    SELECT vbeln, kunnr, bstdk FROM zangebot_vbak
       INTO CORRESPONDING FIELDS OF TABLE @kopfdaten
-      WHERE k~kunnr IN @kunden AND kd~bstdk IN @bestelldaten
+      WHERE kunnr IN @kunden AND bstdk IN @bestelldaten
       AND vbtyp = @vbtyp_angebot.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_angebot_abgesagt
@@ -303,7 +302,7 @@ CLASS ZANGEBOTE_ABGESAGT IMPLEMENTATION.
     ENDLOOP.
 
     SELECT vbeln, posnr, matnr, netpr, kpein, kmein, abgru, waerk
-      FROM vbap INTO CORRESPONDING FIELDS OF TABLE @positionsdaten
+      FROM zangebot_vbap INTO CORRESPONDING FIELDS OF TABLE @positionsdaten
       WHERE vbeln IN @belege AND matnr IN @artikel AND netpr > 0.
 
     " Umrechnung der Mengeneinheit des Preises

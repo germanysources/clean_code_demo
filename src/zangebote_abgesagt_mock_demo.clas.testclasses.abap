@@ -7,17 +7,17 @@ DEFINE initialisierung.
 END-OF-DEFINITION.
 
 DEFINE get_mockup_loader.
-  " @todo
-  " Nach dem Import mit abapgit die Parameter in der create Methode anpassen.
-  " i_path hier ersetzen wir /your/path durch unseren Pfad
-  " i_encoding 4110, falls wir die Textdateien aus der Vorlage verwenden.
-  " Exportieren wir die Microsoft Excel Dateien als Unicode-Text braucht keine Codierung angegeben werden.
+" @todo
+" Nach dem Import mit abapgit die Parameter in der create Methode anpassen.
+" i_path hier ersetzen wir /your/path durch unseren Pfad
+" i_encoding 4110, falls wir die Textdateien aus der Vorlage verwenden.
+" Exportieren wir die Microsoft Excel Dateien als Unicode-Text braucht keine Codierung angegeben werden.
   DATA(mockup) = zcl_mockup_loader=>create(
-  i_path = '/your/path' i_type = 'FILE'
-  i_encoding = '4110' i_begin_comment = '*' ).
+   i_path = '/your/path' i_type = 'FILE'
+   i_encoding = '4110' i_begin_comment = '*' ).
 END-OF-DEFINITION.
 
-* Testklasse Risikostufe Harmlos, da in dieser Klasse keine
+* Testklasse Risikostufe harmlos, da in dieser Klasse keine
 * persistenten Daten geaendert werden
 CLASS test_angebote_abgesagt DEFINITION FOR TESTING
   INHERITING FROM zangebote_abgesagt_mock_demo
@@ -246,7 +246,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
 
     get_mockup_loader.
 
-    " Die erwarteten Werte werden aus den Dateien auftrag_ausschluss und angebote_einschluss gelesen.
+     " Die erwarteten Werte werden aus den Dateien auftrag_ausschluss und angebote_einschluss gelesen.
     " Hier gibt es einmal die Auftraege, die ausgeschlossen werden muessen,
     " und einmal die Angebote, die auf Einschluss geprueft werden muessen.
     mockup->load_data( EXPORTING i_obj = 'auftrag_auschluss'
