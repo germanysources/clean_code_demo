@@ -43,11 +43,16 @@ Selektionsoptionen gepflegt werden (entsprechend den lokalen Datenbankinhalten).
 
 ## Installation ##
 Importiert wird der Source-Code mit dem Tool [abapgit](https://github.com/larshp/abapgit).
-Mindestens SAP Basis 740 wird benötigt.
+Mindestens SAP Basis 740 wird benötigt. 
+### Abhängigkeiten
+Das Tool [mockup_loader](https://github.com/sbcgua/mockup_loader) wird vor der Installation benötigt.
 
 ### Log Protokolle ###
 In der Transaktion slg0 muss zum Objekt "SD-SLS" das Unterobjekt "ZANG_ABGESAGT"
 angelegt werden.
+
+## Branches ##
+Es gibt 2 langlaufende [Branches](https://git-scm.com/docs/git-branch). Einmal der ```master``` Branch. Dieser arbeitet mit den Standardtabellen des SD Moduls (```vbak```, ```vbap```). Der Branch ```without_sd_tables``` ist für Benutzer gedacht ohne Zugriff die Angebote im SD Modul. Hier wurden die Tabelle ```vbak``` durch die Tabelle ```zangebot_vbak``` ersetzt und die Tabelle ```vbap``` durch die Tabelle ```zangebot_vbap``` ersetzt. Diese Tabellen werden in der Transaktion sm30 bearbeitet.
 
 ## Entwicklungsobjekte ##
 ### Report ```zangebote_abgesagt``` ###
