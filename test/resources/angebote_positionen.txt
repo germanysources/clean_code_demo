@@ -1,6 +1,6 @@
 * Die erwarteten Positionen nach dem Lesen der Angebot, die in der Datei
 * angebote.txt spezifiziert sind
-VBELN	POSNR	MATNR	NETPR	KPEIN	KMEIN	WAERK
+VBELN	POSNR	MATNR	NETPR	KPEIN	KMEIN	ABGRU	WAERK
 * kmein in der Einheit des Materialstammes
 
 * kmein in einer Alternativmengeneinheit

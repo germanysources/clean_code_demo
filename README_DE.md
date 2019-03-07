@@ -18,6 +18,13 @@ Der Schlüssel besteht aus Kunde, Artikelnr., Monat und Währung. Für diese
 Kombination gibt es jeweils nur einen Datensatz.
 Angebote ohne Preis oder ohne Artikelnummer werden nicht berücksichtigt.
 
+## Pflege der Angebote ##
+Dieser Branch ist für SAP Installationen gedacht ohne eingerichtetes oder installiertes SD-Modul. Es gibt 2 Pflegeviews (Transaktion sm30):
+Einmal für die Tabelle ```zangebot_vbak````mit den Kopfdaten der Angebote. Diese Tabelle ersetzt die Tabelle ```vbak``` des SD-Moduls.
+<img src="https://raw.githubusercontent.com/germanysources/clean_code_demo/master/docs/pflege_kopfdaten.png" alt="zangebot_vbak">
+Die 2.Tabelle ```zangebot_vbap``` ersetzt die Tabelle ```vbap``` des SD-Moduls mit den Positionsdaten der Angebote:
+<img src="https://raw.githubusercontent.com/germanysources/clean_code_demo/master/docs/pflege_positionsdaten.png" alt="zangebot_vbab">
+
 ## Entwicklungsvorgaben ##
 * Einfache Nachvollziehbarkeit und Wartung
 * Erweiterungsmöglichkeit
@@ -40,6 +47,29 @@ SAP ERP System anpassen jeweils im Makro ```get_mockup_loader``` der Klassen ```
 Zudem müssen noch in der ```setup``` Methode (lokale Testklasse) der Klassen
 ```zangebote_abgesagt``` und ```zangebote_abgesagt_mock_demo```
 Selektionsoptionen gepflegt werden (entsprechend den lokalen Datenbankinhalten).
+
+### Inhalt der Textdateien ###
+Wird die Daten wie in den Screenshoots gepflegt, sehen die Textdateien wie folgt aus:
+#### angebote_einschluss.txt ####
+VBELN | BSTDK | KUNNR
+----- | ----- | -----
+1 | 05.01.2019 | 20
+
+#### auftrag_ausschluss.txt ####
+VBELN | BSTDK | KUNNR
+----- | ----- | -----
+2 | 17.01.2019 | 20
+
+#### angebote.txt ####
+VBELN
+-----
+1
+
+#### angebote_positionen.txt ####
+VBELN | POSNR | MATNR | NETPR | KPEIN | KMEIN | ABGRU | WAERK
+----- | ----- | ----- | ----- | ----- | ----- | ----- | -----
+1 | 10 | 100-A1 | 3000 | 100 | ST | 02 | EUR
+1 | 20 | 100-A2 | 4000 | 100 | ST | 02 | EUR
 
 ## Installation ##
 Importiert wird der Source-Code mit dem Tool [abapgit](https://github.com/larshp/abapgit).
