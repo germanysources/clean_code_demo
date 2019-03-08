@@ -79,7 +79,7 @@ Importiert wird der Source-Code mit dem Tool [abapgit](https://github.com/larshp
 Mindestens SAP Basis 740 wird benötigt.
 
 ### Log Protokolle ###
-In der Transaktion slg0 muss zum Objekt "SD-SLS" das Unterobjekt "ZANG_ABGESAGT"
+In der Transaktion slg0 muss das Objekt "ZSD-SLS" sowie das Unterobjekt "ZANG_ABGESAGT"
 angelegt werden.
 
 ## Entwicklungsobjekte ##
