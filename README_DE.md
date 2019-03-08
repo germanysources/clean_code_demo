@@ -94,7 +94,7 @@ des User-Interfaces sowie die Umsetzung von Unit-Tests demonstrieren.
 Ein Log-Protokoll wird mit der Funktionengruppe ```SBAL``` erzeugt.
 
 ### Klasse ```zangebote_abgesagt_mock_demo``` ###
-Enthält die selbe Funktion wie Klasse ```zangebote_abgesagt```. Hier wurde
+Enthält dieselbe Funktion wie Klasse ```zangebote_abgesagt```. Hier wurde
 nur die Methode ```angebote_kumulieren``` etwas anders implementiert um das mocken
 (gezieltes Ersetzen) von Datenbankabfragen in den Unit-Tests zu demonstrieren.
 Ein Log-Protokoll wird mit der Funktionengruppe ```SBAL``` erzeugt.
