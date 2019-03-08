@@ -240,7 +240,7 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
     ENDIF.
 
     " log Protokoll mit Funktionengruppe SBAL erstellen
-    log_header-object = 'SD-SLS'.
+    log_header-object = 'ZSD-SLS'.
     log_header-subobject = 'ZANG_ABGESAGT'.
     CALL FUNCTION 'BAL_LOG_CREATE'
       EXPORTING
