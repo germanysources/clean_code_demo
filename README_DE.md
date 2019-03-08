@@ -52,7 +52,7 @@ Zudem müssen noch in der ```setup``` Methode (lokale Testklasse) der Klassen
 Selektionsoptionen gepflegt werden (entsprechend den lokalen Datenbankinhalten).
 
 ### Inhalt der Textdateien ###
-Wird die Daten wie in den Screenshoots gepflegt, sehen die Textdateien wie folgt aus:
+Werden die Daten wie in den Screenshoots gepflegt, sehen die Textdateien wie folgt aus:
 #### angebote_einschluss.txt ####
 VBELN | BSTDK | KUNNR
 ----- | ----- | -----
