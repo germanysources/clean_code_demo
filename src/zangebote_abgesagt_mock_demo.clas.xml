@@ -82,7 +82,7 @@
      <DESCRIPT>Destructor Anwendungslog entfernen</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
-     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CLSNAME>ZANGEBOTE_ABGESAGT_MOCK_DEMO</CLSNAME>
      <CMPNAME>VERHAELTNIS</CMPNAME>
      <LANGU>D</LANGU>
      <DESCRIPT>Verhaeltnis Anzahl abgesagte Pos. zur Gesamtanzahl</DESCRIPT>
