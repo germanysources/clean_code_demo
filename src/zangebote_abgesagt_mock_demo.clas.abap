@@ -86,6 +86,9 @@ private section.
   methods GET_TEXTE
     changing
       !SUMME type SUMME_KUNDE_ARTIKEL .
+  methods VERHAELTNIS
+    changing
+      !SUMME type SUMME_KUNDE_ARTIKEL .
 ENDCLASS.
 
 
@@ -257,13 +260,7 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
 
     angebote_kumulieren(
       IMPORTING sum_kunde_artikel = hash_sum_kunde_artikel ).
-
-    " Verhaeltnis Abgesagte gesamt Anzahl Angebote
-    LOOP AT hash_sum_kunde_artikel ASSIGNING <sum>.
-      " Jetzt koennen nur Nicht-Schluesselfelder geaendert werden
-      <sum>-ver_abs = <sum>-anzahl_abgesagt / <sum>-anzahl_gesamt * 100.
-    ENDLOOP.
-
+    verhaeltnis( CHANGING summe = hash_sum_kunde_artikel ). 
     get_texte( CHANGING summe = hash_sum_kunde_artikel ).
 
     CLEAR: summe_kunde_artikel.
@@ -364,6 +361,17 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
       IF sy-subrc = 0.
         <sum>-bez_artikel = <bar>-maktx.
       ENDIF.
+    ENDLOOP.
+
+  endmethod.
+
+
+  method VERHAELTNIS.
+    FIELD-SYMBOLS: <sum> TYPE zangebot_summe_kunde_artikel.
+
+    " Verhaeltnis Anzahl abgesagte Positionen zur Anzahl aller Positionen
+    LOOP AT summe ASSIGNING <sum>.
+      <sum>-ver_abs = <sum>-anzahl_abgesagt / <sum>-anzahl_gesamt * 100.
     ENDLOOP.
 
   endmethod.

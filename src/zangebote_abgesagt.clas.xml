@@ -78,6 +78,12 @@
     </SEOCOMPOTX>
     <SEOCOMPOTX>
      <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
+     <CMPNAME>VERHAELTNIS</CMPNAME>
+     <LANGU>D</LANGU>
+     <DESCRIPT>Verhaeltnis abgesagte Positionen/alle Positionen</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZANGEBOTE_ABGESAGT</CLSNAME>
      <CMPNAME>TEARDOWN</CMPNAME>
      <LANGU>D</LANGU>
      <DESCRIPT>Destructor Anwendungslog entfernen</DESCRIPT>
