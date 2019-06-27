@@ -8,8 +8,7 @@
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
-
-class ZANGEBOTE_ABGESAGT_MOCK_DEMO definition
+class ZANGEBOTE_ABGESAGT_STUB_DEMO definition
   public
   create public .
 
@@ -40,6 +39,8 @@ public section.
   methods TEARDOWN .
 protected section.
 
+  constants ABSAGE_GRUND_ZU_TEUER type ZANGEBOT_ABGRU value '02' ##NO_TEXT.
+
   methods GET_ANGEBOTSKOPFDATEN
     exporting
       !KOPFDATEN type ZANGEBOTS_KOPFDATEN
@@ -53,8 +54,8 @@ protected section.
   methods ANGEBOTE_KUMULIEREN
     exporting
       !SUM_KUNDE_ARTIKEL type SUMME_KUNDE_ARTIKEL
-    RAISING
-      zcx_angebot_abgesagt.
+    raising
+      ZCX_ANGEBOT_ABGESAGT .
 private section.
 
   types:
@@ -68,13 +69,15 @@ private section.
     maktx TYPE maktx,
   END OF _bez_artikel .
 
-  constants ABSAGE_GRUND_ZU_TEUER type ABGRU value '02' ##NO_TEXT.
   constants VBTYP_ANGEBOT type VBTYP value 'B' ##NO_TEXT.
   data BESTELLDATEN type _BESTELLDATEN .
   data KUNDEN type _KUNDEN .
   data ARTIKEL type _ARTIKEL .
   data LOG_HANDLE type BALLOGHNDL .
 
+  methods EINHEITEN_UMRECHNUNG
+    changing
+      !POSITION type ZANGEBOTS_POSITION .
   methods ADD_ANG_TO_SUMME
     importing
       !POSITION type ZANGEBOTS_POSITION
@@ -93,7 +96,7 @@ ENDCLASS.
 
 
 
-CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
+CLASS ZANGEBOTE_ABGESAGT_STUB_DEMO IMPLEMENTATION.
 
 
   METHOD ADD_ANG_TO_SUMME.
@@ -175,11 +178,11 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
   endmethod.
 
 
-  METHOD angebote_kumulieren.
-    DATA: sum            TYPE zangebot_summe_kunde_artikel,
-          kopfdaten      TYPE zangebots_kopfdaten,
+  method ANGEBOTE_KUMULIEREN.
+    DATA: sum TYPE zangebot_summe_kunde_artikel,
+          kopfdaten TYPE zangebots_kopfdaten,
           positionsdaten TYPE zangebots_positionsdaten.
-    FIELD-SYMBOLS: <kopf>     TYPE zangebots_kopf,
+    FIELD-SYMBOLS: <kopf> TYPE zangebots_kopf,
                    <position> TYPE zangebots_position.
 
     get_angebotskopfdaten( IMPORTING kopfdaten = kopfdaten ).
@@ -225,7 +228,7 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
 
     ENDLOOP.
 
-  ENDMETHOD.
+  endmethod.
 
 
   method CONSTRUCTOR.
@@ -254,13 +257,57 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
   endmethod.
 
 
+  method EINHEITEN_UMRECHNUNG.
+    DATA: ziel_einheit TYPE meins,
+          ##NEEDED
+          mtext TYPE string.
+
+    SELECT SINGLE basis_einheit INTO ziel_einheit
+      FROM zangebot_materia
+      WHERE matnr = position-matnr.
+   IF sy-subrc <> 0.
+     " Meldung in String-Objekt schreiben, damit die Meldung protokolliert werden kann
+     MESSAGE e003(zangebote_abgesagt) WITH position-vbeln position-posnr position-matnr INTO mtext.
+     add_log_message( position ).
+     RETURN.
+   ENDIF.
+
+   CALL FUNCTION 'UNIT_CONVERSION_SIMPLE'
+     EXPORTING
+       input = position-kpein
+       unit_in = position-kmein
+       unit_out = ziel_einheit
+     IMPORTING
+       output = position-kpein
+     EXCEPTIONS
+       conversion_not_found = 2
+       division_by_zero = 4
+       units_missing = 6
+       unit_in_not_found = 8
+       unit_out_not_found = 10.
+    " Die restlichen Ausnahmen
+    " wurden nicht abgefangen, da diese ihre Ursache
+    " in Programmierfehlern haben.
+    IF sy-subrc = 0.
+      position-kmein = ziel_einheit.
+    ELSE.
+      " Die Ausnahmen werden protokolliert. Vorraussetzung ist, dass die Ausnahme
+      " mit der Anweisung MESSAGE TYPE '' ID '' NUMBER '' RAISING ausgeloest wurde
+      " Die Ausgabeparameter "output" per Wertuebergabe uebergeben wurde,
+      " findet im Fehlerfall keine Aenderung von position-kpein statt.
+      add_log_message( position ).
+    ENDIF.
+
+  endmethod.
+
+
   method GET_ANGEBOTE.
     DATA: hash_sum_kunde_artikel TYPE summe_kunde_artikel.
-    FIELD-SYMBOLS: <sum> TYPE zangebot_summe_kunde_artikel.
 
     angebote_kumulieren(
       IMPORTING sum_kunde_artikel = hash_sum_kunde_artikel ).
-    verhaeltnis( CHANGING summe = hash_sum_kunde_artikel ). 
+
+    verhaeltnis( CHANGING summe = hash_sum_kunde_artikel ).
     get_texte( CHANGING summe = hash_sum_kunde_artikel ).
 
     CLEAR: summe_kunde_artikel.
@@ -304,29 +351,7 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
     " Umrechnung der Mengeneinheit des Preises
     " auf die Einheit im Materialstamm
     LOOP AT positionsdaten ASSIGNING <position>.
-      CALL FUNCTION 'MATERIAL_UNIT_CONVERSION'
-        EXPORTING
-          input                = <position>-kpein
-          kzmeinh              = abap_true
-          meinh                = <position>-kmein
-          matnr                = <position>-matnr
-        IMPORTING
-          output               = <position>-kpein
-          meins                = <position>-kmein
-        EXCEPTIONS
-          conversion_not_found = 2
-          meinh_not_found      = 4
-          no_meinh             = 6
-          overflow             = 8.
-      " Die restlichen Ausnahmen wurden nicht abgefangen
-      " da diese ihre Ursache in Programmierfehlern haben.
-      " input_invalid kann nicht auftreten <position>-kpein vom Type p
-      " output_invalid kann nicht auftreten <position>-kpein vom Type p
-      IF sy-subrc <> 0.
-        " Umrechnung nicht moeglich. Protokollieren und Angebot ignorieren
-        add_log_message( <position> ).
-      ENDIF.
-
+      einheiten_umrechnung( CHANGING position = <position> ).
     ENDLOOP.
 
   ENDMETHOD.
@@ -343,11 +368,11 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
 
     " zur besseren Performance werden die Bezeichnungen und Namen
     " alle in einem select gelesen
-    SELECT kunnr, name1 FROM kna1
+    SELECT kunnr, name1 FROM zangebot_kunden
       INTO CORRESPONDING FIELDS OF TABLE @name_kunden
       FOR ALL ENTRIES IN @summe
       WHERE kunnr = @summe-kunnr.
-    SELECT matnr, maktx FROM makt
+    SELECT matnr, maktx FROM zangebot_mattext
       INTO CORRESPONDING FIELDS OF TABLE @bez_artikel
       FOR ALL ENTRIES IN @summe
       WHERE matnr = @summe-artikel AND spras = @sy-langu.
@@ -366,6 +391,15 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
   endmethod.
 
 
+  method TEARDOWN.
+
+    CALL FUNCTION 'BAL_LOG_REFRESH'
+      EXPORTING
+        i_log_handle = log_handle.
+
+  endmethod.
+
+
   method VERHAELTNIS.
     FIELD-SYMBOLS: <sum> TYPE zangebot_summe_kunde_artikel.
 
@@ -373,15 +407,6 @@ CLASS ZANGEBOTE_ABGESAGT_MOCK_DEMO IMPLEMENTATION.
     LOOP AT summe ASSIGNING <sum>.
       <sum>-ver_abs = <sum>-anzahl_abgesagt / <sum>-anzahl_gesamt * 100.
     ENDLOOP.
-
-  endmethod.
-
-
-  method TEARDOWN.
-
-    CALL FUNCTION 'BAL_LOG_REFRESH'
-      EXPORTING
-        i_log_handle = log_handle.
 
   endmethod.
 ENDCLASS.

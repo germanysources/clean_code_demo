@@ -1,4 +1,4 @@
-* regenerated at 04.03.2019 12:29:56
+* regenerated at 02.06.2019 11:48:10
 FUNCTION-POOL ZANGEBOT_MAIN              MESSAGE-ID SV.
 
 * INCLUDE LZANGEBOT_MAIND...                 " Local class definition

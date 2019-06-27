@@ -1,6 +1,6 @@
 *---------------------------------------------------------------------*
 *    program for:   TABLEFRAME_ZANGEBOT_MAIN
-*   generation date: 04.03.2019 at 12:29:55
+*   generation date: 02.06.2019 at 11:48:07
 *   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 FUNCTION TABLEFRAME_ZANGEBOT_MAIN      .

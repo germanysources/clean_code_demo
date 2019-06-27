@@ -72,9 +72,9 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     " Diese sind fuer die Datenbankabfragen relevant
     " @todo nach dem Import mit abapgit anpassen
     _bdt-sign = 'I'. _bdt-option = 'BT'. _bdt-low = '20190101'. _bdt-high = '20190131'.
-    APPEND _bdt TO bdt.
-    _kdt-sign = 'I'. _kdt-option = 'EQ'. _kdt-low = ''.
-    APPEND _kdt TO kdt.
+    APPEND _bdt TO bdt.    
+    "_kdt-sign = 'I'. _kdt-option = 'EQ'. _kdt-low = ''.
+    "APPEND _kdt TO kdt.
 
     CREATE OBJECT under_test
       EXPORTING

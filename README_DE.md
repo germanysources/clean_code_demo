@@ -19,7 +19,9 @@ Kombination gibt es jeweils nur einen Datensatz.
 Angebote ohne Preis oder ohne Artikelnummer werden nicht berücksichtigt.
 
 ## Pflege der Angebote ##
-Dieser Branch ist für SAP Installationen gedacht ohne eingerichtetes oder installiertes SD-Modul. Es gibt 2 Pflegeviews (Transaktion sm30):
+Dieser Branch ist für SAP Installationen gedacht ohne eingerichtetes oder
+installiertes SD-Modul sowie für minisap-Installationen. Es gibt 2 Pflegeviews
+(Transaktion sm30), mit denen Sie "Angebote" erstellen oder ändern können:
 Einmal für die Tabelle ```zangebot_vbak``` mit den Kopfdaten der Angebote. Diese Tabelle ersetzt die Tabelle ```vbak``` des SD-Moduls.
 
 ![Pflege zangebot_vbak](https://raw.githubusercontent.com/germanysources/clean_code_demo/without_sd_tables/docs/pflege_kopfdaten.png)
@@ -27,6 +29,11 @@ Einmal für die Tabelle ```zangebot_vbak``` mit den Kopfdaten der Angebote. Dies
 Die 2.Tabelle ```zangebot_vbap``` ersetzt die Tabelle ```vbap``` des SD-Moduls mit den Positionsdaten der Angebote:
 
 ![Pflege zangebot_vbap](https://raw.githubusercontent.com/germanysources/clean_code_demo/without_sd_tables/docs/pflege_positionsdaten.png)
+
+## Stammdaten ##
+Der Kundenstamm wird ersatzweise in der Tabelle ```zangebot_kunden```
+gepflegt, der Materialstamm und die Materialtexte in den Tabellen
+```zangebot_materia``` bzw. ```zangebot_mattext```.
 
 ## Entwicklungsvorgaben ##
 * Einfache Nachvollziehbarkeit und Wartung

@@ -3,23 +3,20 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DD04V>
-    <ROLLNAME>ZANGEBOT_ANZ</ROLLNAME>
+    <ROLLNAME>ZANGEBOT_KMEIN</ROLLNAME>
     <DDLANGUAGE>D</DDLANGUAGE>
+    <DOMNAME>MEINS</DOMNAME>
     <HEADLEN>55</HEADLEN>
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Gesamtanzahl Angebote</DDTEXT>
-    <REPTEXT>Gesamtanzahl Angebote</REPTEXT>
-    <SCRTEXT_S>Anz. Ang.</SCRTEXT_S>
-    <SCRTEXT_M>Gesamtanzahl Angebot</SCRTEXT_M>
-    <SCRTEXT_L>Gesamtanzahl Angebote</SCRTEXT_L>
-    <ACTFLAG>I</ACTFLAG>
+    <DDTEXT>Preiseinheit (Maßeinheit)</DDTEXT>
+    <REPTEXT>Preiseinheit (Maßeinheit)</REPTEXT>
+    <SCRTEXT_S>Preiseinhe</SCRTEXT_S>
+    <SCRTEXT_M>Preiseinheit (Maß)</SCRTEXT_M>
+    <SCRTEXT_L>Preiseinheit (Maßeinheit)</SCRTEXT_L>
     <DTELMASTER>D</DTELMASTER>
-    <RESERVEDTE>JB</RESERVEDTE>
-    <DATATYPE>INT4</DATATYPE>
-    <LENG>000010</LENG>
-    <OUTPUTLEN>000011</OUTPUTLEN>
+    <REFKIND>D</REFKIND>
    </DD04V>
   </asx:values>
  </asx:abap>

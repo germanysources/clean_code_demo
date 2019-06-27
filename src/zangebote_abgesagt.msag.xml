@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
@@ -25,6 +25,17 @@
      <ARBGB>ZANGEBOTE_ABGESAGT</ARBGB>
      <MSGNR>002</MSGNR>
      <TEXT>Keine Meldungen protokolliert.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>D</SPRSL>
+     <ARBGB>ZANGEBOTE_ABGESAGT</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Angebot &amp;1 Position &amp;2 enthält unbekanntes Material &amp;3</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>D</SPRSL>
+     <ARBGB>ZANGEBOTE_ABGESAGT</ARBGB>
+     <MSGNR>091</MSGNR>
     </T100>
    </T100>
   </asx:values>

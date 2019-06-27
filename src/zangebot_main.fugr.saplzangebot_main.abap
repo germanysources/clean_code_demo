@@ -1,8 +1,8 @@
-* regenerated at 04.03.2019 12:29:56
+* regenerated at 02.06.2019 11:48:10
 *******************************************************************
 *   System-defined Include-files.                                 *
 *******************************************************************
-  INCLUDE LZANGEBOT_MAINTOP.                 " Global Data
+  INCLUDE LZANGEBOT_MAINTOP.                 " Global Declarations
   INCLUDE LZANGEBOT_MAINUXX.                 " Function Modules
 
 *******************************************************************
