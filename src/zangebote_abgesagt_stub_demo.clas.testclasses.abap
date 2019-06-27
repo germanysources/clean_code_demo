@@ -7,40 +7,89 @@ DEFINE initialisierung.
 END-OF-DEFINITION.
 
 DEFINE get_mockup_loader.
-  " @todo
-  " Nach dem Import mit abapgit die Parameter in der create Methode anpassen.
-  " i_path hier ersetzen wir /your/path durch unseren Pfad
-  " i_encoding 4110, falls wir die Textdateien aus der Vorlage verwenden.
-  " Exportieren wir die Microsoft Excel Dateien als Unicode-Text braucht keine Codierung angegeben werden.
+" @todo
+" Nach dem Import mit abapgit die Parameter in der create Methode anpassen.
+" i_path hier ersetzen wir /your/path durch unseren Pfad
+" i_encoding 4110, falls wir die Textdateien aus der Vorlage verwenden.
+" Exportieren wir die Microsoft Excel Dateien als Unicode-Text braucht keine Codierung angegeben werden.
   DATA(mockup) = zcl_mockup_loader=>create(
-  i_path = '/your/path' i_type = 'FILE'
-  i_encoding = '4110' i_begin_comment = '*' ).
+   i_path = '/your path' i_type = 'FILE'
+   i_encoding = '4110' i_begin_comment = '*' ).
 END-OF-DEFINITION.
 
-* Testklasse Risikostufe Harmlos, da in dieser Klasse keine
-* persistenten Daten geaendert werden
-CLASS test_angebote_abgesagt DEFINITION FOR TESTING
-  INHERITING FROM zangebote_abgesagt_mock_demo
-  DURATION SHORT RISK LEVEL HARMLESS FINAL.
+CLASS test_angebote_abgesagt DEFINITION DEFERRED.
+
+CLASS stub_kopf_positionsdaten DEFINITION
+  INHERITING FROM zangebote_abgesagt_stub_demo
+  FRIENDS test_angebote_abgesagt.
 
   PUBLIC SECTION.
     METHODS constructor.
 
   PROTECTED SECTION.
 
-    " Datenbankaufruf mocken
+    " Ausgabeparameter enthaelt konstanten Wert
     " Um die Methode kurz zu halten, wurde der value Operator benutzt
     " Dieser Operator steht ab Release 740 zur Verfuegung
     METHODS get_angebotskopfdaten REDEFINITION.
 
-    " Datenbankaufruf mocken
+    " Ausgabeparameter enthaelt konstanten Wert
     " Um die Methode kurz zu halten, wurde der value Operator benutzt
     " Dieser Operator steht ab Release 740 zur Verfuegung
     METHODS get_angebotspositionen REDEFINITION.
 
+ENDCLASS.
+
+CLASS stub_kopf_positionsdaten IMPLEMENTATION.
+
+  METHOD constructor.
+    DATA: bdt  TYPE zangebote_abgesagt_stub_demo=>_bestelldaten,
+          kdt  TYPE zangebote_abgesagt_stub_demo=>_kunden,
+          art  TYPE zangebote_abgesagt_stub_demo=>_artikel.
+
+    " Dem constructor der Superklasse koennen leere Parameter uebergeben werden,
+    " da die Selektionsoptionen nur fuer die Datenbankabfragen benoetigt
+    " werden. Die Datenbankabfragen mocken wir (d.h. wir ersetzen diese)
+    super->constructor( bestelldaten = bdt kunden = kdt artikel = art ).
+
+  ENDMETHOD.
+
+  METHOD get_angebotskopfdaten.
+
+    " Jetzt ersetzen wir das Select-Statement,
+    " um unabhaengig von den Datenbankinhalten zu sein
+    kopfdaten = VALUE #(
+    ( vbeln = '1' kunnr = '1' bstdk = '20190110' )
+    ( vbeln = '2' kunnr = '1' bstdk = '20190111' )
+    ( vbeln = '3' kunnr = '2' bstdk = '20190110' ) ).
+
+  ENDMETHOD.
+
+  METHOD get_angebotspositionen.
+
+    " Jetzt ersetzen wir das Select-Statement,
+    " um unabhaengig von den Datenbankinhalten zu sein
+    positionsdaten = VALUE #(
+    " nicht abgesagt
+    ( vbeln = '1' matnr = 'A1' netpr = 1400 kpein = 10 kmein = 'ST' )
+    " abgesagt
+    ( vbeln = '1' matnr = 'A1' netpr = 1600 kpein = 10 kmein = 'ST' abgru = absage_grund_zu_teuer )
+    " abgesagt
+    ( vbeln = '2' matnr = 'A2' netpr = 1000 kpein = 10 kmein = 'ST' abgru = absage_grund_zu_teuer )
+    ( vbeln = '3' matnr = 'A2' netpr = 1000 kpein = 10 kmein = 'ST' ) ).
+
+  ENDMETHOD.
+
+ENDCLASS.
+
+* Testklasse Risikostufe harmlos, da in dieser Klasse keine
+* persistenten Daten geaendert werden
+CLASS test_angebote_abgesagt DEFINITION FOR TESTING
+  DURATION SHORT RISK LEVEL HARMLESS FINAL.
+
   PRIVATE SECTION.
     " Die privaten Komponenten werden hiermit getestet
-    DATA under_test TYPE REF TO zangebote_abgesagt_mock_demo.
+    DATA under_test TYPE REF TO zangebote_abgesagt_stub_demo.
 
     " Objekt under_test erzeugen, um Datenbankabfragen zu testen
     METHODS setup.
@@ -58,13 +107,13 @@ CLASS test_angebote_abgesagt DEFINITION FOR TESTING
         zcx_angebot_abgesagt.
 
     " Kopfdaten der Angebote lesen
-    " Benutzt die Original-Klasse zangebote_abgesagt_mock_demo
+    " Benutzt die Original-Klasse zangebote_abgesagt_stub_demo
     " Nutzt den Mockup-Loader Version 2.0.2 https://github.com/sbcgua/mockup_loader
     METHODS kopfdaten FOR TESTING
       RAISING cx_static_check.
 
     " Positionsdaten der Angebote lesen
-    " Benutzt die Original-Klasse zangebote_abgesagt_mock_demo
+    " Benutzt die Original-Klasse zangebote_abgesagt_stub_demo
     " Nutzt den Mockup-Loader Version 2.0.2 https://github.com/sbcgua/mockup_loader
     METHODS positionsdaten FOR TESTING
       RAISING cx_static_check.
@@ -75,54 +124,16 @@ ENDCLASS.
 
 " Die Friends-Beziehung erlaubt uns den Zugriff
 " auf alle Methoden und Attribute (auch private)
-CLASS zangebote_abgesagt_mock_demo DEFINITION LOCAL FRIENDS test_angebote_abgesagt.
+CLASS zangebote_abgesagt_stub_demo DEFINITION LOCAL FRIENDS test_angebote_abgesagt.
 
 CLASS test_angebote_abgesagt IMPLEMENTATION.
 
-  METHOD constructor.
-    DATA: bdt  TYPE zangebote_abgesagt_mock_demo=>_bestelldaten,
-          kdt  TYPE zangebote_abgesagt_mock_demo=>_kunden,
-          art  TYPE zangebote_abgesagt_mock_demo=>_artikel.
-
-    " Dem constructor der Superklasse koennen leere Parameter uebergeben werden,
-    " da die Selektionsoptionen nur fuer die Datenbankabfragen benoetigt
-    " werden. Die Datenbankabfragen mocken wir (d.h. wir ersetzen diese)
-    super->constructor( bestelldaten = bdt kunden = kdt artikel = art ).
-
-  ENDMETHOD.
-
-  METHOD get_angebotskopfdaten.
-
-    " Jetzt ersetzen wir das Select-Statement
-    " um unabhaengig von den Datenbankinhalten zu sein
-    kopfdaten = VALUE #(
-    ( vbeln = '1' kunnr = '1' bstdk = '20190110' )
-    ( vbeln = '2' kunnr = '1' bstdk = '20190111' )
-    ( vbeln = '3' kunnr = '2' bstdk = '20190110' ) ).
-
-  ENDMETHOD.
-
-  METHOD get_angebotspositionen.
-
-    " Jetzt ersetzen wir das Select-Statement
-    " um unabhaengig von den Datenbankinhalten zu sein
-    positionsdaten = VALUE #(
-    " nicht abgesagt
-    ( vbeln = '1' matnr = 'A1' netpr = 1400 kpein = 10 kmein = 'ST' )
-    " abgesagt
-    ( vbeln = '1' matnr = 'A1' netpr = 1600 kpein = 10 kmein = 'ST' abgru = zangebote_abgesagt_mock_demo=>absage_grund_zu_teuer )
-    " abgesagt
-    ( vbeln = '2' matnr = 'A2' netpr = 1000 kpein = 10 kmein = 'ST' abgru = zangebote_abgesagt_mock_demo=>absage_grund_zu_teuer )
-    ( vbeln = '3' matnr = 'A2' netpr = 1000 kpein = 10 kmein = 'ST' ) ).
-
-  ENDMETHOD.
-
   METHOD setup.
-    DATA: bdt  TYPE zangebote_abgesagt_mock_demo=>_bestelldaten,
+    DATA: bdt  TYPE zangebote_abgesagt_stub_demo=>_bestelldaten,
           _bdt LIKE LINE OF bdt,
-          kdt  TYPE zangebote_abgesagt_mock_demo=>_kunden,
+          kdt  TYPE zangebote_abgesagt_stub_demo=>_kunden,
           _kdt LIKE LINE OF kdt,
-          art  TYPE zangebote_abgesagt_mock_demo=>_artikel.
+          art  TYPE zangebote_abgesagt_stub_demo=>_artikel.
 
     " Die Selektionsoptionen muessen wir entsprechend
     " unseren vorhandenen Angeboten anpassen.
@@ -130,8 +141,8 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     " @todo nach dem Import mit abapgit die Selektionsoptionen entsprechend anpassen.
     _bdt-sign = 'I'. _bdt-option = 'BT'. _bdt-low = '20190101'. _bdt-high = '20190131'.
     APPEND _bdt TO bdt.
-    _kdt-sign = 'I'. _kdt-option = 'EQ'. _kdt-low = ''.
-    APPEND _kdt TO kdt.
+    "_kdt-sign = 'I'. _kdt-option = 'EQ'. _kdt-low = ''.
+    "APPEND _kdt TO kdt.
 
     CREATE OBJECT under_test
       EXPORTING
@@ -171,7 +182,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     initialisierung.
     position-netpr = 800.
     position-kpein = 10.
-    position-abgru = zangebote_abgesagt_mock_demo=>absage_grund_zu_teuer.
+    position-abgru = zangebote_abgesagt_stub_demo=>absage_grund_zu_teuer.
     exp_summe = summe.
     exp_summe-netto_preis_von = 800.
     exp_summe-kpein_von = 10.
@@ -186,7 +197,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     initialisierung.
     position-netpr = 120.
     position-kpein = 1.
-    position-abgru = zangebote_abgesagt_mock_demo=>absage_grund_zu_teuer.
+    position-abgru = zangebote_abgesagt_stub_demo=>absage_grund_zu_teuer.
     exp_summe = summe.
     exp_summe-anzahl_gesamt = 1.
     exp_summe-anzahl_abgesagt = 1.
@@ -199,7 +210,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     initialisierung.
     position-netpr = 300.
     position-kpein = 1.
-    position-abgru = zangebote_abgesagt_mock_demo=>absage_grund_zu_teuer.
+    position-abgru = zangebote_abgesagt_stub_demo=>absage_grund_zu_teuer.
     exp_summe = summe.
     exp_summe-netto_preis_bis = 300.
     exp_summe-anzahl_gesamt = 1.
@@ -212,10 +223,9 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD kumulation.
-    DATA: kopfdaten             TYPE zangebots_kopfdaten,
-          positionen            TYPE zangebots_positionsdaten,
-          act_sum_kunde_artikel TYPE zangebote_abgesagt_mock_demo=>summe_kunde_artikel,
-          exp_sum_kunde_artikel TYPE zangebote_abgesagt_mock_demo=>summe_kunde_artikel.
+    DATA: act_sum_kunde_artikel TYPE zangebote_abgesagt_stub_demo=>summe_kunde_artikel,
+          exp_sum_kunde_artikel TYPE zangebote_abgesagt_stub_demo=>summe_kunde_artikel,
+          cut_with_stub TYPE REF TO stub_kopf_positionsdaten.
 
     " Die erwarteten Resultate
     exp_sum_kunde_artikel = VALUE #(
@@ -228,8 +238,9 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     ( kunnr = '2' monat = '201901' artikel = 'A2' anzahl_gesamt = 1
       kmein = 'ST' anzahl_abgesagt = 0 )  ).
 
+    CREATE OBJECT cut_with_stub.
     " Jetzt ausfuehren Methode angebote_kumulieren (gibt uns die tatsaechlichen Daten)
-    angebote_kumulieren(
+    cut_with_stub->angebote_kumulieren(
      IMPORTING sum_kunde_artikel = act_sum_kunde_artikel ).
 
     " Jetzt Vergleich tatsaechliche und erwartete Daten
@@ -246,7 +257,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
 
     get_mockup_loader.
 
-    " Die erwarteten Werte werden aus den Dateien auftrag_ausschluss und angebote_einschluss gelesen.
+     " Die erwarteten Werte werden aus den Dateien auftrag_ausschluss und angebote_einschluss gelesen.
     " Hier gibt es einmal die Auftraege, die ausgeschlossen werden muessen,
     " und einmal die Angebote, die auf Einschluss geprueft werden muessen.
     mockup->load_data( EXPORTING i_obj = 'auftrag_auschluss'
@@ -302,7 +313,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
       mtext    TYPE string,
       position TYPE zangebots_position.
 
-    " Hier testen wir nur darauf, dass keine Ausnahmen auftreten
+    " Hier testen wir nur darauf, dass keine Ausnahmen auftritt
     MESSAGE s000(zangebote_abgesagt) INTO mtext.
     position-vbeln = '1'.
     position-posnr = '10'.
