@@ -107,13 +107,13 @@ CLASS test_angebote_abgesagt DEFINITION FOR TESTING
         zcx_angebot_abgesagt.
 
     " Kopfdaten der Angebote lesen
-    " Benutzt die Original-Klasse zangebote_abgesagt_mock_demo
+    " Benutzt die Original-Klasse zangebote_abgesagt_stub_demo
     " Nutzt den Mockup-Loader Version 2.0.2 https://github.com/sbcgua/mockup_loader
     METHODS kopfdaten FOR TESTING
       RAISING cx_static_check.
 
     " Positionsdaten der Angebote lesen
-    " Benutzt die Original-Klasse zangebote_abgesagt_mock_demo
+    " Benutzt die Original-Klasse zangebote_abgesagt_stub_demo
     " Nutzt den Mockup-Loader Version 2.0.2 https://github.com/sbcgua/mockup_loader
     METHODS positionsdaten FOR TESTING
       RAISING cx_static_check.
