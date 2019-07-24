@@ -40,6 +40,8 @@ public section.
   methods TEARDOWN .
 protected section.
 
+  constants ABSAGE_GRUND_ZU_TEUER type ABGRU value '02' ##NO_TEXT.
+
   methods GET_ANGEBOTSKOPFDATEN
     exporting
       !KOPFDATEN type ZANGEBOTS_KOPFDATEN
@@ -53,8 +55,8 @@ protected section.
   methods ANGEBOTE_KUMULIEREN
     exporting
       !SUM_KUNDE_ARTIKEL type SUMME_KUNDE_ARTIKEL
-    RAISING
-      zcx_angebot_abgesagt.
+    raising
+      ZCX_ANGEBOT_ABGESAGT .
 private section.
 
   types:
@@ -68,7 +70,6 @@ private section.
     maktx TYPE maktx,
   END OF _bez_artikel .
 
-  constants ABSAGE_GRUND_ZU_TEUER type ABGRU value '02' ##NO_TEXT.
   constants VBTYP_ANGEBOT type VBTYP value 'B' ##NO_TEXT.
   data BESTELLDATEN type _BESTELLDATEN .
   data KUNDEN type _KUNDEN .
@@ -86,7 +87,7 @@ private section.
   methods GET_TEXTE
     changing
       !SUMME type SUMME_KUNDE_ARTIKEL .
-  methods VERHAELTNIS 
+  methods VERHAELTNIS
     changing
       !SUMME type SUMME_KUNDE_ARTIKEL .
 ENDCLASS.
@@ -259,7 +260,7 @@ CLASS ZANGEBOTE_ABGESAGT_STUB_DEMO IMPLEMENTATION.
 
     angebote_kumulieren(
       IMPORTING sum_kunde_artikel = hash_sum_kunde_artikel ).
-    verhaeltnis( CHANGING summe = hash_sum_kunde_artikel ). 
+    verhaeltnis( CHANGING summe = hash_sum_kunde_artikel ).
     get_texte( CHANGING summe = hash_sum_kunde_artikel ).
 
     CLEAR: summe_kunde_artikel.
@@ -366,6 +367,15 @@ CLASS ZANGEBOTE_ABGESAGT_STUB_DEMO IMPLEMENTATION.
   endmethod.
 
 
+  method TEARDOWN.
+
+    CALL FUNCTION 'BAL_LOG_REFRESH'
+      EXPORTING
+        i_log_handle = log_handle.
+
+  endmethod.
+
+
   method VERHAELTNIS.
     FIELD-SYMBOLS: <sum> TYPE zangebot_summe_kunde_artikel.
 
@@ -373,15 +383,6 @@ CLASS ZANGEBOTE_ABGESAGT_STUB_DEMO IMPLEMENTATION.
     LOOP AT summe ASSIGNING <sum>.
       <sum>-ver_abs = <sum>-anzahl_abgesagt / <sum>-anzahl_gesamt * 100.
     ENDLOOP.
-
-  endmethod.
-
-
-  method TEARDOWN.
-
-    CALL FUNCTION 'BAL_LOG_REFRESH'
-      EXPORTING
-        i_log_handle = log_handle.
 
   endmethod.
 ENDCLASS.

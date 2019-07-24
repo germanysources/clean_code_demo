@@ -87,7 +87,7 @@ private section.
   methods GET_TEXTE
     changing
       !SUMME type SUMME_KUNDE_ARTIKEL .
-  methods VERHAELTNIS 
+  methods VERHAELTNIS
     changing
       !SUMME type SUMME_KUNDE_ARTIKEL .
 ENDCLASS.
@@ -260,7 +260,7 @@ CLASS ZANGEBOTE_ABGESAGT IMPLEMENTATION.
     angebote_kumulieren( EXPORTING kopfdaten = kopfdaten
       positionsdaten = positionsdaten
       IMPORTING sum_kunde_artikel = hash_sum_kunde_artikel ).
-    verhaeltnis( CHANGING summe = hash_sum_kunde_artikel ).  
+    verhaeltnis( CHANGING summe = hash_sum_kunde_artikel ).
     get_texte( CHANGING summe = hash_sum_kunde_artikel ).
 
     CLEAR: summe_kunde_artikel.
@@ -367,6 +367,15 @@ CLASS ZANGEBOTE_ABGESAGT IMPLEMENTATION.
   endmethod.
 
 
+  method TEARDOWN.
+
+    CALL FUNCTION 'BAL_LOG_REFRESH'
+      EXPORTING
+        i_log_handle = log_handle.
+
+  endmethod.
+
+
   method VERHAELTNIS.
     FIELD-SYMBOLS: <sum> TYPE zangebot_summe_kunde_artikel.
 
@@ -374,15 +383,6 @@ CLASS ZANGEBOTE_ABGESAGT IMPLEMENTATION.
     LOOP AT summe ASSIGNING <sum>.
       <sum>-ver_abs = <sum>-anzahl_abgesagt / <sum>-anzahl_gesamt * 100.
     ENDLOOP.
-
-  endmethod.
-
-
-  method TEARDOWN.
-
-    CALL FUNCTION 'BAL_LOG_REFRESH'
-      EXPORTING
-        i_log_handle = log_handle.
 
   endmethod.
 ENDCLASS.
