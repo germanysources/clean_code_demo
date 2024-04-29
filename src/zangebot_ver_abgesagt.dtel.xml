@@ -14,9 +14,7 @@
     <SCRTEXT_S>Ver abgs.</SCRTEXT_S>
     <SCRTEXT_M>Ver. abgs. Ang.</SCRTEXT_M>
     <SCRTEXT_L>Verhältnis abgesagte und nicht abgesagte</SCRTEXT_L>
-    <ACTFLAG>I</ACTFLAG>
     <DTELMASTER>D</DTELMASTER>
-    <RESERVEDTE>JB</RESERVEDTE>
     <DATATYPE>DEC</DATATYPE>
     <LENG>000003</LENG>
     <OUTPUTLEN>000003</OUTPUTLEN>

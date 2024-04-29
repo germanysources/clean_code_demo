@@ -4,9 +4,9 @@
   <asx:values>
    <PROGDIR>
     <NAME>LZANGEBOT_MAINF00</NAME>
-    <SQLX>X</SQLX>
     <SUBC>I</SUBC>
     <RLOAD>D</RLOAD>
+    <UCCHECK>X</UCCHECK>
    </PROGDIR>
   </asx:values>
  </asx:abap>

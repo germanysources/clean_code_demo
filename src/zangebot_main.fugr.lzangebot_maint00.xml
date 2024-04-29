@@ -6,6 +6,7 @@
     <NAME>LZANGEBOT_MAINT00</NAME>
     <SUBC>I</SUBC>
     <RLOAD>D</RLOAD>
+    <UCCHECK>X</UCCHECK>
    </PROGDIR>
   </asx:values>
  </asx:abap>

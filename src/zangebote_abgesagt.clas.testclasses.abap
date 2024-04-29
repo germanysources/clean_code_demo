@@ -1,34 +1,113 @@
+CLASS test_with_fake DEFINITION FOR TESTING
+  DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
-" Initialisierung <summe> fuellen
-DEFINE initialisierung.
-  CLEAR: summe, position.
-  summe-netto_preis_von = 100. summe-netto_preis_bis = 200.
-  summe-kpein_von = 1. summe-kpein_bis = 1.
-END-OF-DEFINITION.
+  PRIVATE SECTION.
+    DATA: under_test TYPE REF TO zangebote_abgesagt.
 
-DEFINE get_mockup_loader.
-" @todo
-" Nach dem Import mit abapgit bitte die Parameter in der create Methode anpassen
-" i_path hier ersetzen wir /your/path durch unseren Pfad
-" i_encoding 4110, falls wir die Textdateien aus der Vorlage verwenden.
-" Exportieren wir die Microsoft Excel Dateien als Unicode-Text braucht keine Codierung angegeben werden.
-  DATA(mockup) = zcl_mockup_loader=>create(
-    i_path = '/your/path' i_type = 'FILE'
-    i_encoding = '4110' i_begin_comment = '*' ).
+    CLASS-METHODS class_setup
+      RAISING
+        cx_static_check.
 
-END-OF-DEFINITION.
+    METHODS setup.
 
-* Testklasse Risikostufe harmlos, da in dieser Klasse keine
-* persistenten Daten geaendert werden
+    METHODS kopfdaten FOR TESTING
+      RAISING
+        cx_static_check.
+
+    CLASS-METHODS class_teardown
+      RAISING
+        cx_static_check.
+
+ENDCLASS.
+
+CLASS zangebote_abgesagt DEFINITION LOCAL FRIENDS test_with_fake.
+
+CLASS test_with_fake IMPLEMENTATION.
+
+  METHOD class_setup.
+    DATA: stub_kopfdaten TYPE STANDARD TABLE OF zangebot_vbak_fa.
+
+    stub_kopfdaten = VALUE #(
+      ( vbeln = '1' kunnr = '1' bstdk = '20190105' vbtyp = 'B' )
+      ( vbeln = '2' kunnr = '2' bstdk = '20190110' vbtyp = 'B' )
+      ( vbeln = '3' kunnr = '1' bstdk = '20190201' vbtyp = 'B' )
+      ( vbeln = '4' kunnr = '1' bstdk = '20190107' vbtyp = 'C' ) ).
+
+    DELETE FROM zangebot_vbak_fa.
+    INSERT zangebot_vbak_fa FROM TABLE stub_kopfdaten.
+    COMMIT WORK AND WAIT.
+
+    cl_osql_replace=>activate_replacement(
+      replacement_table =
+      VALUE #(
+      ( source = 'ZANGEBOT_VBAK' target = 'ZANGEBOT_VBAK_FA' ) ) ).
+
+  ENDMETHOD.
+
+  METHOD setup.
+
+    DATA(bestelldaten) = VALUE zangebote_abgesagt=>_bestelldaten(
+      ( sign = 'I' option = 'BT' low = '20190101' high = '20190131' ) ).
+
+    CREATE OBJECT under_test
+      EXPORTING
+        bestelldaten = bestelldaten
+        kunden       = VALUE zangebote_abgesagt=>_kunden( )
+        artikel      = VALUE zangebote_abgesagt=>_artikel( ).
+
+  ENDMETHOD.
+
+  METHOD kopfdaten.
+
+    DATA(exp_ausschluss) = VALUE zangebots_kopfdaten(
+      ( vbeln = '3' bstdk = '20190201' kunnr = '1' )
+      ( vbeln = '4' bstdk = '20190107' kunnr = '1' ) ).
+    DATA(exp_einschluss) = VALUE zangebots_kopfdaten(
+      ( vbeln = '1' bstdk = '20190105' kunnr = '1' )
+      ( vbeln = '2' bstdk = '20190110' kunnr = '2' ) ).
+
+    under_test->get_angebotskopfdaten(
+      IMPORTING
+        kopfdaten = DATA(act_kopfdaten) ).
+
+    LOOP AT exp_ausschluss ASSIGNING FIELD-SYMBOL(<exp_ausschluss>).
+      cl_abap_unit_assert=>assert_table_not_contains(
+        line = <exp_ausschluss> table = act_kopfdaten
+        msg = 'Ausgeschlossener Beleg ist enthalten' ).
+    ENDLOOP.
+
+    LOOP AT exp_einschluss ASSIGNING FIELD-SYMBOL(<exp_einschluss>).
+      cl_abap_unit_assert=>assert_table_contains(
+        line = <exp_einschluss> table = act_kopfdaten
+        msg = 'Angebot solle enthalten sein, ist aber nicht' ).
+    ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD class_teardown.
+
+    cl_osql_replace=>activate_replacement( ).
+
+  ENDMETHOD.
+
+ENDCLASS.
+
 CLASS test_angebote_abgesagt DEFINITION FOR TESTING
   DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
   PRIVATE SECTION.
     DATA: under_test TYPE REF TO zangebote_abgesagt.
 
-    " Setup Methode ist eine Methode, die vor Beginn jeder Testmethode gerufen
-    " wird. Hier erzeugen wir eine Instanz der Klasse zangebote_abgesagt
+    CLASS-METHODS class_setup.
+
     METHODS setup.
+
+    CLASS-METHODS db_stub_vorbereiten.
+
+    METHODS initialisierung
+      CHANGING
+        summe    TYPE zangebot_summe_kunde_artikel
+        position TYPE zangebots_position.
 
     " offenes Angebot (nicht abgesagt) zur Summe hinzufuegen
     METHODS add_ang_to_summe FOR TESTING.
@@ -36,19 +115,15 @@ CLASS test_angebote_abgesagt DEFINITION FOR TESTING
     " abgesagtes Angebot zur Summe hinzufuegen
     METHODS add_asg_ang_to_summe FOR TESTING.
 
-    " Kumulation. Um die Methode kurz zu halten, wurde der value Operator benutzt
-    " Dieser Operator steht ab Release 740 zur Verfuegung
     METHODS kumulation FOR TESTING.
 
-    " Kopfdaten der Angebote lesen
-    " Nutzt den Mockup-Loader Version 2.0.2 https://github.com/sbcgua/mockup_loader
     METHODS kopfdaten FOR TESTING
-      RAISING cx_static_check.
+      RAISING
+        cx_static_check.
 
-    " Positionsdaten der Angebote lesen
-    " Nutzt den Mockup-Loader Version 2.0.2 https://github.com/sbcgua/mockup_loader
     METHODS positionsdaten FOR TESTING
-      RAISING cx_static_check.
+      RAISING
+        cx_static_check.
 
     METHODS add_log_message FOR TESTING.
 
@@ -60,27 +135,59 @@ CLASS zangebote_abgesagt DEFINITION LOCAL FRIENDS test_angebote_abgesagt.
 
 CLASS test_angebote_abgesagt IMPLEMENTATION.
 
-  METHOD setup.
-    DATA: bdt  TYPE zangebote_abgesagt=>_bestelldaten,
-          _bdt LIKE LINE OF bdt,
-          kdt  TYPE zangebote_abgesagt=>_kunden,
-          _kdt LIKE LINE OF kdt,
-          art  TYPE zangebote_abgesagt=>_artikel.
+  METHOD class_setup.
 
-    " Die Selektionsoptionen muessen wir entsprechend
-    " unseren vorhandenen Angeboten anpassen.
-    " Diese sind fuer die Datenbankabfragen relevant
-    " @todo nach dem Import mit abapgit anpassen
-    _bdt-sign = 'I'. _bdt-option = 'BT'. _bdt-low = '20190101'. _bdt-high = '20190131'.
-    APPEND _bdt TO bdt.    
-    "_kdt-sign = 'I'. _kdt-option = 'EQ'. _kdt-low = ''.
-    "APPEND _kdt TO kdt.
+    db_stub_vorbereiten( ).
+
+  ENDMETHOD.
+
+  METHOD setup.
+
+    DATA(bestelldaten) = VALUE zangebote_abgesagt=>_bestelldaten(
+      ( sign = 'I' option = 'BT' low = '20190101' high = '20190131' ) ).
 
     CREATE OBJECT under_test
       EXPORTING
-        bestelldaten = bdt
-        kunden       = kdt
-        artikel      = art.
+        bestelldaten = bestelldaten
+        kunden       = VALUE zangebote_abgesagt=>_kunden( )
+        artikel      = VALUE zangebote_abgesagt=>_artikel( ).
+
+  ENDMETHOD.
+
+  METHOD db_stub_vorbereiten.
+
+    DATA(test_environment) = cl_osql_test_environment=>create(
+      VALUE #( ( 'ZANGEBOT_MATERIA' ) ( 'ZANGEBOT_VBAK' ) ( 'ZANGEBOT_VBAP' ) ) ).
+    test_environment->clear_doubles( ).
+
+    DATA(materialien) = VALUE zangebot_materialien(
+      ( matnr = '1' basis_einheit = 'ST' )
+      ( matnr = '2' basis_einheit = 'ST' ) ).
+    test_environment->insert_test_data( materialien ).
+
+    DATA(kopfdaten) = VALUE zangebot_kopfdaten(
+      ( vbeln = '1' kunnr = '1' bstdk = '20190105' vbtyp = 'B' )
+      ( vbeln = '2' kunnr = '2' bstdk = '20190110' vbtyp = 'B' )
+      ( vbeln = '3' kunnr = '1' bstdk = '20190201' vbtyp = 'B' )
+      ( vbeln = '4' kunnr = '1' bstdk = '20190107' vbtyp = 'C' ) ).
+    test_environment->insert_test_data( kopfdaten ).
+
+    DATA(positionsdaten) = VALUE zangebot_positionsdaten(
+      ( vbeln = '1' posnr = 10 matnr = '1' netpr = 100 kpein = 1 kmein = 'ST' waerk = 'EUR' )
+      ( vbeln = '1' posnr = 20 matnr = '2' netpr = 80 kpein = 1 kmein = 'ST' waerk = 'EUR' )
+      ( vbeln = '2' posnr = 10 matnr = '1' netpr = 110 kpein = 1 kmein = 'ST' waerk = 'EUR'
+        abgru = '02' )
+      ( vbeln = '3' posnr = 10 matnr = '1' netpr = 100 kpein = 1 kmein = 'ST' waerk = 'EUR' )
+      ( vbeln = '4' posnr = 10 matnr = '1' netpr = 100 kpein = 1 kmein = 'ST' waerk = 'EUR' ) ).
+    test_environment->insert_test_data( positionsdaten ).
+
+  ENDMETHOD.
+
+  METHOD initialisierung.
+
+    CLEAR: position.
+    summe = VALUE #( netto_preis_von = 100 netto_preis_bis = 200
+      kpein_von = 1 kpein_bis = 1 ).
 
   ENDMETHOD.
 
@@ -89,9 +196,10 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
           position  TYPE zangebots_position,
           exp_summe TYPE zangebot_summe_kunde_artikel.
 
-    " Testfaelle
-    " Angebot nicht abgesagt
-    initialisierung.
+    initialisierung(
+      CHANGING
+        summe = summe
+        position = position ).
     position-netpr = 300.
     position-kpein = 1.
     exp_summe = summe.
@@ -108,10 +216,11 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
           position  TYPE zangebots_position,
           exp_summe TYPE zangebot_summe_kunde_artikel.
 
-    " Testfaelle
-    " Angebot abgesagt
-    "   Preis diese Position < Preis von
-    initialisierung.
+    " Preis < Preis von
+    initialisierung(
+      CHANGING
+        summe = summe
+        position = position ).
     position-netpr = 800.
     position-kpein = 10.
     position-abgru = zangebote_abgesagt=>absage_grund_zu_teuer.
@@ -125,8 +234,11 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = exp_summe act = summe
       msg = 'Summe fuer abgesagtes Angebot nicht korrekt' ).
 
-    "   Preis diese Position >= Preis von und Preis diese Position <= Preis bis
-    initialisierung.
+    " Preis diese Position innerhalb Preis von und Preis bis
+    initialisierung(
+      CHANGING
+        summe = summe
+        position = position ).
     position-netpr = 120.
     position-kpein = 1.
     position-abgru = zangebote_abgesagt=>absage_grund_zu_teuer.
@@ -138,8 +250,11 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = exp_summe act = summe
       msg = 'Summe fuer abgesagtes Angebot nicht korrekt' ).
 
-    "   Preis diese Position > Preis bis
-    initialisierung.
+    " Preis diese Position > Preis bis
+    initialisierung(
+      CHANGING
+        summe = summe
+        position = position ).
     position-netpr = 300.
     position-kpein = 1.
     position-abgru = zangebote_abgesagt=>absage_grund_zu_teuer.
@@ -155,19 +270,16 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD kumulation.
-    DATA: kopfdaten TYPE zangebots_kopfdaten,
-          positionen TYPE zangebots_positionsdaten,
+    DATA: kopfdaten             TYPE zangebots_kopfdaten,
+          positionen            TYPE zangebots_positionsdaten,
           act_sum_kunde_artikel TYPE zangebote_abgesagt=>summe_kunde_artikel,
           exp_sum_kunde_artikel TYPE zangebote_abgesagt=>summe_kunde_artikel.
 
-    " Jetzt fuellen wir die Kopfdaten. Es spielt keine Rolle, ob die Daten
-    " so in der Datenbank vorkommen.
     kopfdaten = VALUE #(
     ( vbeln = '1' kunnr = '1' bstdk = '20190110' )
     ( vbeln = '2' kunnr = '1' bstdk = '20190111' )
     ( vbeln = '3' kunnr = '2' bstdk = '20190110' ) ).
 
-    " Jetzt die Positionsdaten
     positionen = VALUE #(
     " nicht abgesagt
     ( vbeln = '1' matnr = 'A1' netpr = 1400 kpein = 10 kmein = 'ST' )
@@ -177,7 +289,6 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     ( vbeln = '2' matnr = 'A2' netpr = 1000 kpein = 10 kmein = 'ST' abgru = zangebote_abgesagt=>absage_grund_zu_teuer )
     ( vbeln = '3' matnr = 'A2' netpr = 1000 kpein = 10 kmein = 'ST' ) ).
 
-    " Jetzt die erwarteten Resultate
     exp_sum_kunde_artikel = VALUE #(
     ( kunnr = '1' monat = '201901' artikel = 'A1' anzahl_gesamt = 2
       kmein = 'ST' anzahl_abgesagt = 1 netto_preis_von = 1600
@@ -188,71 +299,64 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
     ( kunnr = '2' monat = '201901' artikel = 'A2' anzahl_gesamt = 1
       kmein = 'ST' anzahl_abgesagt = 0 )  ).
 
-    " Jetzt ausfuehren Methode angebote_kumulieren (gibt uns die tatsaechlichen Daten)
     under_test->angebote_kumulieren( EXPORTING kopfdaten = kopfdaten
       positionsdaten = positionen
       IMPORTING sum_kunde_artikel = act_sum_kunde_artikel ).
 
-    " Jetzt Vergleich tatsaechliche und erwartete Daten
     cl_abap_unit_assert=>assert_equals( exp = exp_sum_kunde_artikel
       act = act_sum_kunde_artikel msg = 'Kumulation fehlerhaft' ).
 
   ENDMETHOD.
 
   METHOD kopfdaten.
-    DATA: exp_auschluss TYPE zangebots_kopf,
-          exp_einschluss TYPE zangebots_kopfdaten,
-          act_kopfdaten TYPE zangebots_kopfdaten.
-    FIELD-SYMBOLS: <exp> TYPE zangebots_kopf.
 
-    get_mockup_loader.
+    DATA(exp_ausschluss) = VALUE zangebots_kopfdaten(
+      ( vbeln = '3' bstdk = '20190201' kunnr = '1' )
+      ( vbeln = '4' bstdk = '20190107' kunnr = '1' ) ).
+    DATA(exp_einschluss) = VALUE zangebots_kopfdaten(
+      ( vbeln = '1' bstdk = '20190105' kunnr = '1' )
+      ( vbeln = '2' bstdk = '20190110' kunnr = '2' ) ).
 
-    " Die erwarteten Werte werden aus den Dateien auftrag_auschluss und angebote_einschluss gelesen.
-    " Hier gibt es einmal die Auftraege, die ausgeschlossen werden muessen
-    " und einmal die Angebote, die auf Einschluss geprueft werden muessen.
-    mockup->load_data( EXPORTING i_obj = 'auftrag_auschluss'
-      IMPORTING e_container = exp_auschluss ).
-    mockup->load_data( EXPORTING i_obj = 'angebote_einschluss'
-      IMPORTING e_container = exp_einschluss ).
+    under_test->get_angebotskopfdaten(
+      IMPORTING
+        kopfdaten = DATA(act_kopfdaten) ).
 
-    under_test->get_angebotskopfdaten( IMPORTING kopfdaten = act_kopfdaten ).
+    LOOP AT exp_ausschluss ASSIGNING FIELD-SYMBOL(<exp_ausschluss>).
+      cl_abap_unit_assert=>assert_table_not_contains(
+        line = <exp_ausschluss> table = act_kopfdaten
+        msg = 'Ausgeschlossener Beleg ist enthalten' ).
+    ENDLOOP.
 
-    " Den Auftrag auf Auschluss pruefen
-    cl_abap_unit_assert=>assert_table_not_contains(
-      line = exp_auschluss table = act_kopfdaten
-      msg = 'Auftrag ist enthalten' ).
-
-    " Die Angebote auf Einschluss pruefen
-    LOOP AT exp_einschluss ASSIGNING <exp>.
+    LOOP AT exp_einschluss ASSIGNING FIELD-SYMBOL(<exp_einschluss>).
       cl_abap_unit_assert=>assert_table_contains(
-        line = <exp> table = act_kopfdaten
-        msg = 'Angebot ist nicht enthalten' ).
+        line = <exp_einschluss> table = act_kopfdaten
+        msg = 'Angebot solle enthalten sein, ist aber nicht' ).
     ENDLOOP.
 
   ENDMETHOD.
 
   METHOD positionsdaten.
-    DATA: act_positionen TYPE zangebots_positionsdaten,
-          exp_positionen LIKE act_positionen,
-          angebote TYPE zangebots_kopfdaten.
 
-    get_mockup_loader.
+    DATA(angebote) = VALUE zangebots_kopfdaten(
+      ( vbeln = '1' bstdk = '20190105' kunnr = '1' )
+      ( vbeln = '2' bstdk = '20190110' kunnr = '2' ) ).
 
-    " Die Angebote, deren Positionen wir lesen wollen
-    mockup->load_data( EXPORTING i_obj = 'angebote' i_strict = abap_false
-     IMPORTING e_container = angebote ).
-    " Die erwarteten Positionen
-    mockup->load_data( EXPORTING i_obj = 'angebote_positionen'
-      IMPORTING e_container = exp_positionen ).
+    DATA(exp_positionen) = VALUE zangebots_positionsdaten(
+      ( vbeln = '1' posnr = 10 matnr = '1' netpr = 100 kpein = 1 kmein = 'ST' waerk = 'EUR' )
+      ( vbeln = '1' posnr = 20 matnr = '2' netpr = 80 kpein = 1 kmein = 'ST' waerk = 'EUR' )
+      ( vbeln = '2' posnr = 10 matnr = '1' netpr = 110 kpein = 1 kmein = 'ST' waerk = 'EUR'
+        abgru = '02' ) ).
 
-    under_test->get_angebotspositionen( EXPORTING angebots_nummern = angebote
-      IMPORTING positionsdaten = act_positionen ).
+    under_test->get_angebotspositionen(
+      EXPORTING
+        angebots_nummern = angebote
+      IMPORTING
+        positionsdaten = DATA(act_positionen) ).
 
     " Sortierung, damit Vergleich nicht fehlschlaegt
     SORT: act_positionen BY vbeln posnr,
       exp_positionen BY vbeln posnr.
 
-    " Vergleich erwartete und tatsaechliche Positionen
     cl_abap_unit_assert=>assert_equals( exp = exp_positionen
       act = act_positionen msg = 'Positionen stimmen nicht' ).
 
@@ -260,9 +364,9 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
 
   METHOD add_log_message.
     DATA:
-          ##NEEDED
-          mtext TYPE string,
-          position TYPE zangebots_position.
+      ##NEEDED
+      mtext    TYPE string,
+      position TYPE zangebots_position.
 
     " Hier testen wir nur darauf, dass keine Ausnahmen auftreten
     MESSAGE s000(zangebote_abgesagt) INTO mtext.
