@@ -28,27 +28,12 @@ Angebote ohne Preis oder ohne Artikelnummer werden nicht berücksichtigt.
 * Gut lesbarerer Source-Code (Länge der Methoden wird kurz gehalten)
 * Unit-Tests soweit möglich
 
-## Unit-Tests ##
-Die Datenbankabfragen werden auch in den Unit-Tests berücksichtigt. Dazu ist das
-Tool [mockup_loader](https://github.com/sbcgua/mockup_loader) notwendig.
-Dieses Tool importiert Textdateien, die in einem zip-Archiv gepackt sind.
-Im Ordner test/resources sind die entsprechenden Vorlagen.
-Den Pfad des zip-Archives auf unserer lokalen Installation müssen wir nach dem Import in das
-SAP ERP System anpassen jeweils im Makro ```get_mockup_loader``` der Klassen ```zangebote_abgesagt``` und
-```zangebote_abgesagt_mock_demo```.
-
-Zudem müssen noch in der ```setup``` Methode (lokale Testklasse) der Klassen
-```zangebote_abgesagt``` und ```zangebote_abgesagt_mock_demo```
-Selektionsoptionen gepflegt werden (entsprechend den lokalen Datenbankinhalten).
-
 ## Installation ##
 Importiert wird der Source-Code mit dem Tool [abapgit](https://github.com/larshp/abapgit).
-Mindestens SAP Basis 740 wird benötigt. 
-### Abhängigkeiten
-Das Tool [mockup_loader](https://github.com/sbcgua/mockup_loader) wird vor der Installation benötigt.
+Mindestens SAP Basis 752 wird benötigt. 
 
 ### Log Protokolle ###
-In der Transaktion slg0 muss zum Objekt "SD-SLS" das Unterobjekt "ZANG_ABGESAGT"
+In der Transaktion slg0 muss zum Objekt "ZSD-SLS" das Unterobjekt "ZANG_ABGESAGT"
 hinzugefügt werden.
 
 ## Branches ##
@@ -65,7 +50,7 @@ und Anwendungslogik, klassenbasierte Ausnahmen zur vollständigen Abtrennung
 des User-Interfaces sowie die Umsetzung von Unit-Tests demonstrieren.
 Ein Log-Protokoll wird mit der Funktionengruppe ```SBAL``` erzeugt.
 
-### Klasse ```zangebote_abgesagt_mock_demo``` ###
+### Klasse ```zangebote_abgesagt_stub_demo``` ###
 Enthält dieselbe Funktion wie Klasse ```zangebote_abgesagt```. Hier wurde
 nur die Methode ```angebote_kumulieren``` etwas anders implementiert um das mocken
 (gezieltes Ersetzen) von Datenbankabfragen in den Unit-Tests zu demonstrieren.
