@@ -25,22 +25,32 @@ CLASS zangebote_abgesagt DEFINITION LOCAL FRIENDS test_with_fake.
 CLASS test_with_fake IMPLEMENTATION.
 
   METHOD class_setup.
-    DATA: stub_kopfdaten TYPE STANDARD TABLE OF zangebot_vbak_fa.
+    DATA:
+      stub_kopfdaten TYPE STANDARD TABLE OF zangebot_vbak_fa,
+      stub_kaufdaten TYPE STANDARD TABLE OF zangebot_vbkd_fa.
 
     stub_kopfdaten = VALUE #(
       ( vbeln = '1' kunnr = '1' bstdk = '20190105' vbtyp = 'B' )
       ( vbeln = '2' kunnr = '2' bstdk = '20190110' vbtyp = 'B' )
       ( vbeln = '3' kunnr = '1' bstdk = '20190201' vbtyp = 'B' )
       ( vbeln = '4' kunnr = '1' bstdk = '20190107' vbtyp = 'C' ) ).
+    stub_kaufdaten = VALUE #(
+      ( vbeln = '1' bstdk = '20190105' )
+      ( vbeln = '2' bstdk = '20190110' )
+      ( vbeln = '3' bstdk = '20190201' )
+      ( vbeln = '4' bstdk = '20190107' ) ).
 
     DELETE FROM zangebot_vbak_fa.
     INSERT zangebot_vbak_fa FROM TABLE stub_kopfdaten.
+    DELETE FROM zangebot_vbkd_fa.
+    INSERT zangebot_vbkd_fa FROM TABLE stub_kaufdaten.
     COMMIT WORK AND WAIT.
 
     cl_osql_replace=>activate_replacement(
       replacement_table =
       VALUE #(
-      ( source = 'VBAK' target = 'ZANGEBOT_VBAK_FA' ) ) ).
+      ( source = 'VBAK' target = 'ZANGEBOT_VBAK_FA' )
+      ( source = 'VBKD' target = 'ZANGEBOT_VBKD_FA' ) ) ).
 
   ENDMETHOD.
 
@@ -157,7 +167,7 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
   METHOD db_stub_vorbereiten.
 
     DATA(test_environment) = cl_osql_test_environment=>create(
-      VALUE #( ( 'MARA' ) ( 'VBAK' ) ( 'VBAP' ) ) ).
+      VALUE #( ( 'MARA' ) ( 'VBAK' ) ( 'VBKD' ) ( 'VBAP' ) ) ).
     test_environment->clear_doubles( ).
 
     DATA(materialien) = VALUE zangebot_materialien(
@@ -171,6 +181,13 @@ CLASS test_angebote_abgesagt IMPLEMENTATION.
       ( vbeln = '3' kunnr = '1' bstdk = '20190201' vbtyp = 'B' )
       ( vbeln = '4' kunnr = '1' bstdk = '20190107' vbtyp = 'C' ) ).
     test_environment->insert_test_data( kopfdaten ).
+
+    DATA(kaufdaten) = VALUE zangebot_kaufdaten(
+      ( vbeln = '1' bstdk = '20190105' )
+      ( vbeln = '2' bstdk = '20190110' )
+      ( vbeln = '3' bstdk = '20190201' )
+      ( vbeln = '4' bstdk = '20190107' ) ).
+    test_environment->insert_test_data( kaufdaten ).
 
     DATA(positionsdaten) = VALUE zangebot_positionsdaten(
       ( vbeln = '1' posnr = 10 matnr = '1' netpr = 100 kpein = 1 kmein = 'ST' waerk = 'EUR' )
